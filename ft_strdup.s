@@ -1,27 +1,53 @@
 	global _ft_strdup; char *ft_strdup(char *s1)
-	extern _ft_strcpy; char *ft_strcpy(char *s1, char *s2)
-	extern _ft_strlen; char *ft_strlen(char *s1)
 	extern _malloc; void *malloc(int size)
+
 segment .text
 
 _ft_strdup :
-	push	rcx
-	push	rsi
-	call	_ft_strlen
-	inc		rax; include '\0'
-	push	rdi; backup src
-	mov		rdi, rax
-	call	_malloc
-	pop		rsi; restore src
-	cmp		rax, 0x0; if (ptr == NULL)
-	je		null_end
-	mov		rdi, rax; prepare cpy
-	call	_ft_strcpy
+	sub		rax, rax
+	push	rcx; backup register
+	push	rbx;
+	cmp		rdi, 0; if (s1 == NULL)
+	jne		len_init
 
-
-
-
-null_end :
-	pop	rsi
+end_return :
+	pop	rbx
 	pop	rcx
 	ret
+
+len_init :
+	sub		rcx, rcx; int i = 0
+
+len_count :
+	mov		al, byte [rdi + rcx]
+	inc		rcx; i++
+	cmp		al, 0
+	jne		len_count
+
+malloc_init :
+	push	rdi; backup s1
+	mov		rdi, rcx; malloc(sizeof(char) * len)
+
+malloc_call :
+	call	_malloc
+
+malloc_null_check :
+	cmp		rax, 0; if (new_str == NULL)
+	pop		rdi
+	je		end_return
+
+cpy_init :
+	sub	rcx, rcx; int i = 0
+	sub	rbx, rbx
+
+cpy_loop :
+	mov	bl, byte [rdi + rcx]
+	mov	byte [rax + rcx], bl
+
+cpy_end :
+	cmp	bl, 0; if (src[i] == \0)
+	je	end_return
+
+cpy_inc :
+	inc	rcx
+	jmp	cpy_loop
