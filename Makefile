@@ -1,6 +1,6 @@
 NAME = libasm.a
-SRC = ft_read.s ft_strcmp.s ft_strcpy.s \
-	ft_strdup.s ft_strlen.s ft_write.s
+SRC = ft_strcmp.s ft_strcpy.s ft_strdup.s\
+	ft_strlen.s ft_write.s ft_read.s
 OBJ = $(SRC:.s=.o)
 AR = ar rcus
 AS = nasm
@@ -23,4 +23,7 @@ fclean : clean
 
 re : clean all
 
-.PHONY : all clean fclean re
+test : $(NAME)
+	gcc main.c -L. -lasm && ./a.out
+
+.PHONY : all clean fclean re test

@@ -10,7 +10,7 @@ _ft_strdup :
 	cmp		rdi, 0; if (s1 == NULL)
 	jne		len_init
 
-end_return :
+func_return :
 	pop	rbx
 	pop	rcx
 	ret
@@ -26,7 +26,7 @@ len_count :
 
 malloc_init :
 	push	rdi; backup s1
-	mov		rdi, rcx; malloc(sizeof(char) * len)
+	mov		rdi, rcx; new_str = malloc(sizeof(char) * len)
 
 malloc_call :
 	call	_malloc
@@ -34,7 +34,7 @@ malloc_call :
 malloc_null_check :
 	cmp		rax, 0; if (new_str == NULL)
 	pop		rdi
-	je		end_return
+	je		func_return
 
 cpy_init :
 	sub	rcx, rcx; int i = 0
@@ -46,7 +46,7 @@ cpy_loop :
 
 cpy_end :
 	cmp	bl, 0; if (src[i] == \0)
-	je	end_return
+	je	func_return
 
 cpy_inc :
 	inc	rcx
